@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ data.event_title }}</title>
+    <style>
+        body { background: #fffdf5; text-align: center; padding: 50px; }
+        .invitation-box { border: 2px solid #d4af37; display: inline-block; padding: 40px; border-radius: 20px; }
+        h1 { font-family: 'Cursive', serif; color: #b8860b; font-size: 3em; }
+    </style>
+</head>
+<body>
+    <div class="invitation-box">
+        <h1>{{ data.event_title }}</h1>
+        <p>Սիրով հրավիրում ենք ձեզ մասնակցելու մեր տոնին:</p>
+        <p>📅 {{ data.event_date if data.event_date else 'Շուտով' }}</p>
+        <button>Հաստատել ներկայությունը</button>
+    </div>
+</body>
+</html>

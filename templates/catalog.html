@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <title>BelleAme - Կատալոգ</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .card img { width: 100%; border-radius: 10px; }
+        .price { color: #d4af37; font-weight: bold; font-size: 1.2em; margin: 10px 0; }
+        .btn { background: black; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Ընտրեք ձեր սիրելի դիզայնը 💌</h1>
+<div class="grid">
+    {% for t in templates %}
+    <div class="card">
+        <img src="/static/images/template_{{ t.id }}.png" alt="Design">
+        <h3>Կոդ: {{ t.name }}</h3>
+        <p class="price">{{ t.price }} ֏</p>
+
+        {# Ստուգում ենք, արդյոք այս շաբլոնը ունի կապված հրավիրատոմս #}
+        {% if t.invitations %}
+            {# Վերցնում ենք առաջին հրավիրատոմսի slug-ը #}
+            <a href="/api/{{ t.invitations[0].slug }}" class="btn">Դիտել օրինակը</a>
+        {% else %}
+            <span class="btn" style="background: #ccc;">Օրինակը չկա</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
