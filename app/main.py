@@ -11,10 +11,7 @@ app = FastAPI(title="BelleAme", description="Հարսանյաց հրավիրատ
 # Static ֆայլեր (CSS, images)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Միացնում ենք Router-ը
-app.include_router(router, prefix="/api")
-
-# Գլխավոր էջը հասանելի է նաև առանց /api
+# Միացնում ենք Router-ը ՄԻԱՅՆ ՄԵԿ ԱՆԳԱՄ
 app.include_router(router)
 
 @app.get("/health")

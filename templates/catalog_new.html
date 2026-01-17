@@ -21,7 +21,7 @@
                          onerror="this.src='/static/images/placeholder.png'">
                     <div class="product-overlay">
                         {% if t.invitations %}
-                            <a href="/api/{{ t.invitations[0].slug }}" class="btn btn-view">Դիտել Օրինակը</a>
+                            <a href="/invite/{{ t.invitations[0].slug }}" class="btn btn-view">Դիտել Օրինակը</a>
                         {% else %}
                             <span class="btn btn-disabled">Օրինակը չկա</span>
                         {% endif %}
@@ -35,15 +35,15 @@
                     </div>
                     <div class="product-actions">
                         {% if t.invitations %}
-                            <a href="/api/{{ t.invitations[0].slug }}" class="btn btn-primary btn-sm">Դիտել</a>
+                            <a href="/invite/{{ t.invitations[0].slug }}" class="btn btn-primary btn-sm">Դիտել</a>
                         {% endif %}
-                        <button class="btn btn-secondary btn-sm" onclick="selectTemplate({{ t.id }}, '{{ t.name }}', {{ t.price }})">Ընտրել</button>
+                        <a href="/product/{{ t.id }}" class="btn btn-secondary btn-sm">Մանրամասն</a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-        
+
         {% if not templates %}
         <div class="empty-state">
             <div class="empty-icon">📭</div>
@@ -57,8 +57,7 @@
 <script>
 function selectTemplate(id, name, price) {
     alert(`Դուք ընտրել եք "${name}" դիզայնը\nԳին: ${price} ֏\n\nՀաջորդ քայլը՝ անհատականացում`);
-    // Այստեղ կարող եք ավելացնել տրանսֆեր դեպի պատվերի էջ
-    // window.location.href = `/order?template_id=${id}`;
+    window.location.href = `/product/${id}`;
 }
 </script>
 {% endblock %}

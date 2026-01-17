@@ -5,7 +5,7 @@
 {% block content %}
 <section class="product-detail">
     <div class="container">
-        <a href="/api/catalog" class="back-link">← Վերադառնալ կատալոգ</a>
+        <a href="/catalog" class="back-link">← Վերադառնալ կատալոգ</a>
 
         <div class="product-layout">
             <div class="product-preview">
@@ -16,7 +16,7 @@
                 </div>
                 <div class="preview-actions">
                     {% if product.invitations %}
-                        <a href="/api/{{ product.invitations[0].slug }}"
+                        <a href="/invite/{{ product.invitations[0].slug }}"
                            class="btn btn-primary btn-block"
                            target="_blank">
                            Դիտել Կենդանի Օրինակը
