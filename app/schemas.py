@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import datetime
+
 
 # Template Schemas
 class TemplateBase(BaseModel):
@@ -7,13 +9,17 @@ class TemplateBase(BaseModel):
     html_file: str
     price: float
 
+
 class TemplateCreate(TemplateBase):
     pass
 
+
 class Template(TemplateBase):
     id: int
+
     class Config:
         from_attributes = True
+
 
 # Invitation Schemas
 class InvitationBase(BaseModel):
@@ -21,10 +27,34 @@ class InvitationBase(BaseModel):
     event_title: str
     template_id: int
 
+
 class InvitationCreate(InvitationBase):
     pass
 
+
 class Invitation(InvitationBase):
     id: int
+
+    class Config:
+        from_attributes = True
+
+
+# RSVP Schemas
+class RSVPResponseBase(BaseModel):
+    guest_name: str
+    attending: str  # 'yes', 'no', 'maybe'
+    guest_count: int = 1
+    message: Optional[str] = None
+
+
+class RSVPResponseCreate(RSVPResponseBase):
+    invitation_id: int
+
+
+class RSVPResponse(RSVPResponseBase):
+    id: int
+    invitation_id: int
+    submitted_at: datetime
+
     class Config:
         from_attributes = True
