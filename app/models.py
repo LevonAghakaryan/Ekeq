@@ -10,8 +10,21 @@ class Template(Base):
     name = Column(String(100), nullable=False)
     html_file = Column(String(100), nullable=False)
     price = Column(Float, default=0.0)
+    music_url = Column(String(255), nullable=True)  # ԱՎԵԼԱՑՎԱԾ�
 
     invitations = relationship("Invitation", back_populates="template")
+    media_files = relationship("TemplateMedia", back_populates="template", cascade="all, delete-orphan")  # ԱՎԵԼԱՑՎԱԾ�
+
+
+class TemplateMedia(Base):  # ՆՈՐ ԱՂՅՈՒՍԱԿ
+    __tablename__ = "templates_media"
+
+    id = Column(Integer, primary_key=True, index=True)
+    template_id = Column(Integer, ForeignKey("templates.id"), nullable=False)
+    file_url = Column(String(255), nullable=False)
+    file_type = Column(String(20), nullable=False)  # 'image' կամ 'video'
+
+    template = relationship("Template", back_populates="media_files")
 
 
 class Invitation(Base):

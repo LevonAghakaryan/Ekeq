@@ -23,6 +23,54 @@
             margin: 0 auto;
         }
 
+        /* Երաժշտության Player */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .music-player audio {
+            width: 200px;
+        }
+
+        /* Մեդիա Պատկերասրահ */
+        .media-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .media-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            aspect-ratio: 1;
+        }
+
+        .media-item img,
+        .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .media-item:hover img,
+        .media-item:hover video {
+            transform: scale(1.1);
+        }
+
         .invitation-card {
             background: white;
             border: 3px solid #d4af37;
@@ -226,6 +274,15 @@
             .radio-option {
                 min-width: 100%;
             }
+
+            .music-player {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .media-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
         }
     </style>
 </head>
@@ -243,6 +300,23 @@
                 <p>📍 <strong>Վայր:</strong> Հյուսիսային պողոտա 7, Երևան</p>
             </div>
         </div>
+
+        <!-- Մեդիա Պատկերասրահ -->
+        {% if media_files %}
+        <div class="media-gallery">
+            {% for media in media_files %}
+                <div class="media-item">
+                    {% if media.file_type == 'image' %}
+                        <img src="{{ media.file_url }}" alt="Photo">
+                    {% elif media.file_type == 'video' %}
+                        <video controls>
+                            <source src="{{ media.file_url }}" type="video/mp4">
+                        </video>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <!-- RSVP Form -->
         <div class="rsvp-section">
@@ -335,5 +409,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Երաժշտության Player (եթե կա) -->
+    {% if music_url %}
+    <div class="music-player">
+        <audio controls autoplay loop>
+            <source src="{{ music_url }}" type="audio/mpeg">
+            Ձեր բրաուզերը չի սուպորտ անում audio-ն։
+        </audio>
+    </div>
+    {% endif %}
 </body>
 </html>

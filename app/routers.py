@@ -4,8 +4,8 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from core.database import get_db
 from app import models, schemas
-from app.repositories import RSVPRepository
-from app.services import RSVPService
+from app.repositories import RSVPRepository, TemplateMediaRepository
+from app.services import RSVPService, TemplateMediaService
 
 router = APIRouter()
 html_templates = Jinja2Templates(directory="templates")
@@ -34,9 +34,14 @@ def show_product_detail(request: Request, product_id: int, db: Session = Depends
     if not product:
         raise HTTPException(status_code=404, detail="Պրոդուկտը չի գտնվել")
 
+    # Մեդիա ֆայլերը վերցնել
+    media_service = TemplateMediaService(TemplateMediaRepository(db))
+    media_files = media_service.get_template_media(product_id)
+
     return html_templates.TemplateResponse("product_detail.html", {
         "request": request,
-        "product": product
+        "product": product,
+        "media_files": media_files  # ԱՎԵԼԱՑՎԱԾ
     })
 
 
@@ -51,10 +56,16 @@ def show_invitation(request: Request, slug: str, db: Session = Depends(get_db)):
     rsvp_repo = RSVPRepository(db)
     stats = rsvp_repo.get_stats(invitation.id)
 
+    # Մեդիա ֆայլերը վերցնել
+    media_service = TemplateMediaService(TemplateMediaRepository(db))
+    media_files = media_service.get_template_media(invitation.template_id)
+
     return html_templates.TemplateResponse(f"designs/{invitation.template.html_file}", {
         "request": request,
         "data": invitation,
-        "stats": stats
+        "stats": stats,
+        "media_files": media_files,  # ԱՎԵԼԱՑՎԱԾ
+        "music_url": invitation.template.music_url  # ԱՎԵԼԱՑՎԱԾ
     })
 
 

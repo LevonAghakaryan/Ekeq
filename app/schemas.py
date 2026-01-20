@@ -3,11 +3,30 @@ from typing import List, Optional
 from datetime import datetime
 
 
+# TemplateMedia Schemas
+class TemplateMediaBase(BaseModel):
+    file_url: str
+    file_type: str  # 'image' կամ 'video'
+
+
+class TemplateMediaCreate(TemplateMediaBase):
+    template_id: int
+
+
+class TemplateMedia(TemplateMediaBase):
+    id: int
+    template_id: int
+
+    class Config:
+        from_attributes = True
+
+
 # Template Schemas
 class TemplateBase(BaseModel):
     name: str
     html_file: str
     price: float
+    music_url: Optional[str] = None  # ԱՎԵԼԱՑՎԱԾ
 
 
 class TemplateCreate(TemplateBase):
@@ -16,6 +35,7 @@ class TemplateCreate(TemplateBase):
 
 class Template(TemplateBase):
     id: int
+    media_files: List[TemplateMedia] = []  # ԱՎԵԼԱՑՎԱԾ
 
     class Config:
         from_attributes = True

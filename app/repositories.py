@@ -11,12 +11,45 @@ class TemplateRepository(BaseRepository):
     def get_all(self):
         return self.db.query(models.Template).all()
 
+    def get_by_id(self, template_id: int):
+        return self.db.query(models.Template).filter(models.Template.id == template_id).first()
+
     def create(self, template: schemas.TemplateCreate):
         db_template = models.Template(**template.model_dump())
         self.db.add(db_template)
         self.db.commit()
         self.db.refresh(db_template)
         return db_template
+
+
+class TemplateMediaRepository(BaseRepository):  # ՆՈՐ REPOSITORY
+    def get_by_template_id(self, template_id: int):
+        """Վերադարձնում է բոլոր մեդիա ֆայլերը տվյալ Template-ի համար"""
+        return self.db.query(models.TemplateMedia).filter(
+            models.TemplateMedia.template_id == template_id
+        ).all()
+
+    def create(self, media: schemas.TemplateMediaCreate):
+        """Նոր մեդիա ֆայլ ստեղծել"""
+        db_media = models.TemplateMedia(**media.model_dump())
+        self.db.add(db_media)
+        self.db.commit()
+        self.db.refresh(db_media)
+        return db_media
+
+    def create_multiple(self, media_list: list):
+        """Բազմաթիվ մեդիա ֆայլեր միանգամից ավելացնել"""
+        db_media_list = [models.TemplateMedia(**media.model_dump()) for media in media_list]
+        self.db.add_all(db_media_list)
+        self.db.commit()
+        return db_media_list
+
+    def delete_by_template_id(self, template_id: int):
+        """Ջնջել բոլոր մեդիան տվյալ Template-ից"""
+        self.db.query(models.TemplateMedia).filter(
+            models.TemplateMedia.template_id == template_id
+        ).delete()
+        self.db.commit()
 
 
 class InvitationRepository(BaseRepository):
