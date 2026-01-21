@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from core.database import engine, Base
-from .routers import router
+from app.routers import main_router
 
 # Ստեղծում ենք բազան
 Base.metadata.create_all(bind=engine)
@@ -11,8 +11,8 @@ app = FastAPI(title="BelleAme", description="Հարսանյաց հրավիրատ
 # Static ֆայլեր (CSS, images)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Միացնում ենք Router-ը ՄԻԱՅՆ ՄԵԿ ԱՆԳԱՄ
-app.include_router(router)
+# Միացնում ենք բոլոր router-ները
+app.include_router(main_router)
 
 @app.get("/health")
 def health_check():
