@@ -10,13 +10,14 @@ class Template(Base):
     name = Column(String(100), nullable=False)
     html_file = Column(String(100), nullable=False)
     price = Column(Float, default=0.0)
-    music_url = Column(String(255), nullable=True)  # ԱՎԵԼԱՑՎԱԾ�
+    music_url = Column(String(255), nullable=True)
 
     invitations = relationship("Invitation", back_populates="template")
-    media_files = relationship("TemplateMedia", back_populates="template", cascade="all, delete-orphan")  # ԱՎԵԼԱՑՎԱԾ�
+    media_files = relationship("TemplateMedia", back_populates="template", cascade="all, delete-orphan")
+    orders = relationship("Order", back_populates="template")  # ՆՈՐ
 
 
-class TemplateMedia(Base):  # ՆՈՐ ԱՂՅՈՒՍԱԿ
+class TemplateMedia(Base):
     __tablename__ = "templates_media"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -50,3 +51,17 @@ class RSVPResponse(Base):
     submitted_at = Column(DateTime, default=datetime.utcnow)
 
     invitation = relationship("Invitation", back_populates="responses")
+
+
+class Order(Base):  # ՆՈՐ ԱՂՅՈՒՍԱԿ
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    customer_name = Column(String(200), nullable=False)
+    phone_number = Column(String(20), nullable=False)
+    preferred_contact = Column(String(20), nullable=False)  # 'WhatsApp', 'Telegram', 'Viber', 'Phone'
+    template_id = Column(Integer, ForeignKey("templates.id"), nullable=False)
+    status = Column(String(20), default="New")  # 'New', 'Pending', 'Completed'
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    template = relationship("Template", back_populates="orders")

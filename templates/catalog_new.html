@@ -21,7 +21,7 @@
                          onerror="this.src='/static/images/placeholder.png'">
                     <div class="product-overlay">
                         {% if t.invitations %}
-                            <a href="/invite/{{ t.invitations[0].slug }}" class="btn btn-view">Դիտել Օրինակը</a>
+                            <a href="/invite/{{ t.invitations[0].slug }}" class="btn btn-primary">Դիտել Օրինակը</a>
                         {% else %}
                             <span class="btn btn-disabled">Օրինակը չկա</span>
                         {% endif %}
@@ -35,9 +35,9 @@
                     </div>
                     <div class="product-actions">
                         {% if t.invitations %}
-                            <a href="/invite/{{ t.invitations[0].slug }}" class="btn btn-primary btn-sm">Դիտել</a>
+                            <a href="/invite/{{ t.invitations[0].slug }}" class="btn btn-secondary btn-sm">Դիտել</a>
                         {% endif %}
-                        <a href="/product/{{ t.id }}" class="btn btn-secondary btn-sm">Մանրամասն</a>
+                        <a href="/product/{{ t.id }}" class="btn btn-primary btn-sm">Մանրամասն</a>
                     </div>
                 </div>
             </div>
@@ -53,11 +53,4 @@
         {% endif %}
     </div>
 </section>
-
-<script>
-function selectTemplate(id, name, price) {
-    alert(`Դուք ընտրել եք "${name}" դիզայնը\nԳին: ${price} ֏\n\nՀաջորդ քայլը՝ անհատականացում`);
-    window.location.href = `/product/${id}`;
-}
-</script>
 {% endblock %}

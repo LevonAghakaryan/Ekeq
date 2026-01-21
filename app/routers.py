@@ -4,8 +4,8 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from core.database import get_db
 from app import models, schemas
-from app.repositories import RSVPRepository, TemplateMediaRepository
-from app.services import RSVPService, TemplateMediaService
+from app.repositories import RSVPRepository, TemplateMediaRepository, OrderRepository
+from app.services import RSVPService, TemplateMediaService, OrderService
 
 router = APIRouter()
 html_templates = Jinja2Templates(directory="templates")
@@ -41,11 +41,40 @@ def show_product_detail(request: Request, product_id: int, db: Session = Depends
     return html_templates.TemplateResponse("product_detail.html", {
         "request": request,
         "product": product,
-        "media_files": media_files  # ԱՎԵԼԱՑՎԱԾ
+        "media_files": media_files
     })
 
 
-# 4. Հրավիրատոմսի էջ (slug-ով)
+# 4. Պատվեր ուղարկել (POST)
+@router.post("/product/{product_id}/order", name="submit_order")
+async def submit_order(
+        product_id: int,
+        customer_name: str = Form(...),
+        phone_number: str = Form(...),
+        preferred_contact: str = Form(...),
+        db: Session = Depends(get_db)
+):
+    # Ստուգել, արդյոք template-ը գոյություն ունի
+    product = db.query(models.Template).filter(models.Template.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Պրոդուկտը չի գտնվել")
+
+    # Պատվեր ստեղծել
+    order_data = schemas.OrderCreate(
+        customer_name=customer_name,
+        phone_number=phone_number,
+        preferred_contact=preferred_contact,
+        template_id=product_id
+    )
+
+    order_service = OrderService(OrderRepository(db))
+    order_service.create_order(order_data)
+
+    # Redirect դեպի success էջ
+    return RedirectResponse(url=f"/product/{product_id}?order_success=true", status_code=303)
+
+
+# 5. Հրավիրատոմսի էջ (slug-ով)
 @router.get("/invite/{slug}", name="invitation")
 def show_invitation(request: Request, slug: str, db: Session = Depends(get_db)):
     invitation = db.query(models.Invitation).filter(models.Invitation.slug == slug).first()
@@ -64,12 +93,12 @@ def show_invitation(request: Request, slug: str, db: Session = Depends(get_db)):
         "request": request,
         "data": invitation,
         "stats": stats,
-        "media_files": media_files,  # ԱՎԵԼԱՑՎԱԾ
-        "music_url": invitation.template.music_url  # ԱՎԵԼԱՑՎԱԾ
+        "media_files": media_files,
+        "music_url": invitation.template.music_url
     })
 
 
-# 5. RSVP Submit (Form POST)
+# 6. RSVP Submit (Form POST)
 @router.post("/invite/{slug}/rsvp", name="submit_rsvp")
 async def submit_rsvp(
         slug: str,
@@ -100,7 +129,7 @@ async def submit_rsvp(
     return RedirectResponse(url=f"/invite/{slug}?success=true", status_code=303)
 
 
-# 6. Admin - Տեսնել responses-ները (optional)
+# 7. Admin - Տեսնել responses-ները
 @router.get("/admin/invitation/{invitation_id}/responses", name="admin_responses")
 def view_responses(request: Request, invitation_id: int, db: Session = Depends(get_db)):
     invitation = db.query(models.Invitation).filter(models.Invitation.id == invitation_id).first()
@@ -116,4 +145,16 @@ def view_responses(request: Request, invitation_id: int, db: Session = Depends(g
         "invitation": invitation,
         "responses": responses,
         "stats": stats
+    })
+
+
+# 8. Admin - Բոլոր պատվերները տեսնել
+@router.get("/admin/orders", name="admin_orders")
+def view_orders(request: Request, db: Session = Depends(get_db)):
+    order_service = OrderService(OrderRepository(db))
+    orders = order_service.get_all_orders()
+
+    return html_templates.TemplateResponse("admin_orders.html", {
+        "request": request,
+        "orders": orders
     })

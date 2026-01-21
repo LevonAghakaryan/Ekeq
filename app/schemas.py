@@ -26,7 +26,7 @@ class TemplateBase(BaseModel):
     name: str
     html_file: str
     price: float
-    music_url: Optional[str] = None  # ԱՎԵԼԱՑՎԱԾ
+    music_url: Optional[str] = None
 
 
 class TemplateCreate(TemplateBase):
@@ -35,7 +35,7 @@ class TemplateCreate(TemplateBase):
 
 class Template(TemplateBase):
     id: int
-    media_files: List[TemplateMedia] = []  # ԱՎԵԼԱՑՎԱԾ
+    media_files: List[TemplateMedia] = []
 
     class Config:
         from_attributes = True
@@ -75,6 +75,27 @@ class RSVPResponse(RSVPResponseBase):
     id: int
     invitation_id: int
     submitted_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# Order Schemas (ՆՈՐ)
+class OrderBase(BaseModel):
+    customer_name: str
+    phone_number: str
+    preferred_contact: str  # 'WhatsApp', 'Telegram', 'Viber', 'Phone'
+    template_id: int
+
+
+class OrderCreate(OrderBase):
+    pass
+
+
+class Order(OrderBase):
+    id: int
+    status: str  # 'New', 'Pending', 'Completed'
+    created_at: datetime
 
     class Config:
         from_attributes = True

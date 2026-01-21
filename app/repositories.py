@@ -22,7 +22,7 @@ class TemplateRepository(BaseRepository):
         return db_template
 
 
-class TemplateMediaRepository(BaseRepository):  # ՆՈՐ REPOSITORY
+class TemplateMediaRepository(BaseRepository):
     def get_by_template_id(self, template_id: int):
         """Վերադարձնում է բոլոր մեդիա ֆայլերը տվյալ Template-ի համար"""
         return self.db.query(models.TemplateMedia).filter(
@@ -93,3 +93,30 @@ class RSVPRepository(BaseRepository):
             "total_maybe": maybe_count,
             "total_responses": len(responses)
         }
+
+
+class OrderRepository(BaseRepository):  # ՆՈՐ REPOSITORY
+    def create(self, order: schemas.OrderCreate):
+        """Նոր պատվեր ստեղծել"""
+        db_order = models.Order(**order.model_dump())
+        self.db.add(db_order)
+        self.db.commit()
+        self.db.refresh(db_order)
+        return db_order
+
+    def get_all(self):
+        """Բոլոր պատվերները վերադարձնել"""
+        return self.db.query(models.Order).order_by(models.Order.created_at.desc()).all()
+
+    def get_by_id(self, order_id: int):
+        """Պատվերը ID-ով գտնել"""
+        return self.db.query(models.Order).filter(models.Order.id == order_id).first()
+
+    def update_status(self, order_id: int, new_status: str):
+        """Պատվերի կարգավիճակը թարմացնել"""
+        order = self.get_by_id(order_id)
+        if order:
+            order.status = new_status
+            self.db.commit()
+            self.db.refresh(order)
+        return order
