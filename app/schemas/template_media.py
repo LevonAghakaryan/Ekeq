@@ -7,12 +7,12 @@ class TemplateMediaBase(BaseModel):
 
 
 class TemplateMediaCreate(TemplateMediaBase):
-    template_id: int
+    invitation_id: int
 
 
 class TemplateMedia(TemplateMediaBase):
     id: int
-    template_id: int
+    invitation_id: int
 
     class Config:
         from_attributes = True

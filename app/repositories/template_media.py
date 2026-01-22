@@ -6,9 +6,9 @@ class TemplateMediaRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_by_template_id(self, template_id: int):
+    def get_by_invitation_id(self, invitation_id: int):
         return self.db.query(models.TemplateMedia).filter(
-            models.TemplateMedia.template_id == template_id
+            models.TemplateMedia.invitation_id == invitation_id
         ).all()
 
     def create(self, media: schemas.TemplateMediaCreate):
@@ -24,8 +24,8 @@ class TemplateMediaRepository:
         self.db.commit()
         return db_media_list
 
-    def delete_by_template_id(self, template_id: int):
+    def delete_by_invitation_id(self, invitation_id: int):
         self.db.query(models.TemplateMedia).filter(
-            models.TemplateMedia.template_id == template_id
+            models.TemplateMedia.invitation_id == invitation_id
         ).delete()
         self.db.commit()

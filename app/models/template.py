@@ -13,5 +13,4 @@ class Template(Base):
     music_url = Column(String(255), nullable=True)
 
     invitations = relationship("Invitation", back_populates="template")
-    media_files = relationship("TemplateMedia", back_populates="template", cascade="all, delete-orphan")
     orders = relationship("Order", back_populates="template")

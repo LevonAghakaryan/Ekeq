@@ -18,9 +18,9 @@
             {% for template in templates %}
             <div class="template-card">
                 <div class="template-preview">
-                    <!-- Preview Image -->
-                    {% if template.media_files %}
-                        <img src="{{ template.media_files[0].file_url }}" alt="{{ template.name }}">
+                    <!-- Preview Image - օգտագործում ենք առաջին invitation-ի նկարը -->
+                    {% if template.preview_image %}
+                        <img src="{{ template.preview_image }}" alt="{{ template.name }}">
                     {% else %}
                         <div class="template-placeholder">
                             <span>{{ template.name }}</span>

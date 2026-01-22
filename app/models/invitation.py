@@ -12,4 +12,5 @@ class Invitation(Base):
     template_id = Column(Integer, ForeignKey("templates.id"))
 
     template = relationship("Template", back_populates="invitations")
-    responses = relationship("RSVPResponse", back_populates="invitation")
+    responses = relationship("RSVPResponse", back_populates="invitation", cascade="all, delete-orphan")
+    media_files = relationship("TemplateMedia", back_populates="invitation", cascade="all, delete-orphan")

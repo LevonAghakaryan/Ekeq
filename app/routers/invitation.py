@@ -21,7 +21,7 @@ def show_invitation(request: Request, slug: str, db: Session = Depends(get_db)):
     stats = rsvp_repo.get_stats(invitation.id)
 
     media_service = TemplateMediaService(TemplateMediaRepository(db))
-    media_files = media_service.get_template_media(invitation.template_id)
+    media_files = media_service.get_invitation_media(invitation.id)
 
     return html_templates.TemplateResponse(f"designs/{invitation.template.html_file}", {
         "request": request,
