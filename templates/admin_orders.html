@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Պատվերներ - BelleAme Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        margin-top: 80px;
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .admin-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .orders-container {
+        padding: 3rem 2rem;
+    }
+    
+    .orders-table {
+        width: 100%;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .orders-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .orders-table th {
+        background-color: #f8f9fa;
+        padding: 1.2rem;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .orders-table td {
+        padding: 1.2rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .orders-table tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .status-new {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-processing {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-completed {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .empty-state h3 {
+        font-size: 1.8rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="container">
+        <h1 class="admin-title">Պատվերների Կառավարում</h1>
+        <p>Բոլոր մուտքագրված պատվերները</p>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="orders-container">
+    <div class="container">
+        {% if orders %}
+        <div class="orders-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Հաճախորդ</th>
+                        <th>Հեռախոս</th>
+                        <th>Կապի Միջոց</th>
+                        <th>Ընտրված Ձևանմուշ</th>
+                        <th>Կարգավիճակ</th>
+                        <th>Ամսաթիվ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>#{{ order.id }}</strong></td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.phone_number }}</td>
+                        <td>{{ order.preferred_contact }}</td>
+                        <td>{{ order.template.name }}</td>
+                        <td>
+                            <span class="status-badge status-{{ order.status|lower }}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>Դեռ պատվերներ չկան</h3>
+            <p>Երբ հաճախորդները պատվեր կատարեն, դրանք կհայտնվեն այստեղ</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

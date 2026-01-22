@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Հրավիրատոմսեր - BelleAme{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title">Մեր Հրավիրատոմսերը</h1>
+        <p class="page-subtitle">Ընտրեք ձեր սիրած դիզայնը և սկսեք ստեղծել ձեր անմոռանալի հրավիրատոմսը</p>
+    </div>
+</section>
+
+<!-- Templates Grid -->
+<section class="templates-section">
+    <div class="container">
+        <div class="templates-grid">
+            {% for template in templates %}
+            <div class="template-card">
+                <div class="template-preview">
+                    <!-- Preview Image -->
+                    {% if template.media_files %}
+                        <img src="{{ template.media_files[0].file_url }}" alt="{{ template.name }}">
+                    {% else %}
+                        <div class="template-placeholder">
+                            <span>{{ template.name }}</span>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Overlay on hover -->
+                    <div class="template-overlay">
+                        {% if template.invitations %}
+                            <a href="/invite/{{ template.invitations[0].slug }}" class="btn btn-white">Դիտել Ավելին</a>
+                        {% else %}
+                            <a href="#" class="btn btn-white">Օրինակ չկա</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="template-info">
+                    <h3 class="template-name">{{ template.name }}</h3>
+                    <div class="template-footer">
+                        <span class="template-price">{{ template.price|int }} ֏</span>
+                        <a href="/product/{{ template.id }}" class="template-link">Ընտրել →</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Empty State -->
+{% if not templates %}
+<section class="empty-state">
+    <div class="container">
+        <div class="empty-content">
+            <h3>Դեռ հրավիրատոմսեր չկան</h3>
+            <p>Շուտով կավելացնենք նոր դիզայններ</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}RSVP Պատասխաններ - {{ invitation.event_title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        margin-top: 80px;
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .admin-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #667eea;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    .responses-container {
+        padding: 2rem;
+    }
+    
+    .response-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 1rem;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #667eea;
+    }
+    
+    .response-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .guest-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .response-status {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .status-yes {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-no {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-maybe {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .response-details {
+        color: #666;
+        line-height: 1.8;
+    }
+    
+    .response-message {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+        font-style: italic;
+        color: #555;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="container">
+        <h1 class="admin-title">{{ invitation.event_title }}</h1>
+        <p>RSVP Պատասխաններ և Վիճակագրություն</p>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="container">
+    <div class="stats-cards">
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_yes }}</span>
+            <span class="stat-label">Կգան</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_maybe }}</span>
+            <span class="stat-label">Հնարավոր Է</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_no }}</span>
+            <span class="stat-label">Չեն Գա</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_responses }}</span>
+            <span class="stat-label">Ընդամենը Պատասխան</span>
+        </div>
+    </div>
+</div>
+
+<!-- Responses List -->
+<div class="responses-container">
+    <div class="container">
+        <h2 style="margin-bottom: 2rem; font-family: var(--font-display);">Բոլոր Պատասխանները</h2>
+        
+        {% if responses %}
+            {% for response in responses %}
+            <div class="response-card">
+                <div class="response-header">
+                    <span class="guest-name">{{ response.guest_name }}</span>
+                    <span class="response-status status-{{ response.attending }}">
+                        {% if response.attending == 'yes' %}
+                            ✓ Կգա
+                        {% elif response.attending == 'no' %}
+                            ✗ Չի գա
+                        {% else %}
+                            ? Հնարավոր է
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="response-details">
+                    <p><strong>Հյուրերի քանակ:</strong> {{ response.guest_count }}</p>
+                    <p><strong>Ամսաթիվ:</strong> {{ response.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+                
+                {% if response.message %}
+                <div class="response-message">
+                    "{{ response.message }}"
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <h3>Դեռ պատասխաններ չկան</h3>
+            <p>Երբ հյուրերը հաստատեն իրենց ներկայությունը, պատասխանները կհայտնվեն այստեղ</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
